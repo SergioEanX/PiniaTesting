@@ -1,0 +1,30 @@
+{
+    "sourceFile": "src/components/TaskForm.vue",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 3,
+            "patches": [
+                {
+                    "date": 1673804847094,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1673805131788,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n       title: newTask.value,\n       isFav: false\n     }\n \n-    taskStore.add(newTaskObj)\n+    taskStore.addTask(newTaskObj)\n     newTask.value = ''\n   }\n }\n </script>\n"
+                },
+                {
+                    "date": 1673805635282,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n       title: newTask.value,\n       isFav: false\n     }\n \n-    taskStore.addTask(newTaskObj)\n+    taskStore.add(newTaskObj)\n     newTask.value = ''\n   }\n }\n </script>\n"
+                },
+                {
+                    "date": 1673807442190,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n       title: newTask.value,\n       isFav: false\n     }\n \n-    taskStore.add(newTaskObj)\n+    taskStore.addTask(newTaskObj)\n     newTask.value = ''\n   }\n }\n </script>\n"
+                }
+            ],
+            "date": 1673804847094,
+            "name": "Commit-0",
+            "content": "<template>\n  <form @submit.prevent=\"handleSubmit\">\n    <input type=\"text\" placeholder=\"I need to...\" v-model=\"newTask\">\n    <button>Add</button>\n  </form>\n</template>\n\n<script setup>\nimport { ref } from 'vue'\nimport { useTaskStore } from '@/stores/TaskStore'\n\nconst newTask = ref('')\nconst taskStore = useTaskStore()\n\nconst handleSubmit = () => {\n  if (newTask.value.length > 0) {\n    const newTaskObj = {\n      id: taskStore.totalCount + 1,\n      title: newTask.value,\n      isFav: false\n    }\n\n    taskStore.add(newTaskObj)\n    newTask.value = ''\n  }\n}\n</script>\n\n"
+        }
+    ]
+}

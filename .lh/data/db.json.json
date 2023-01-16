@@ -1,0 +1,18 @@
+{
+    "sourceFile": "data/db.json",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1673874711142,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1673874711142,
+            "name": "Commit-0",
+            "content": "{\n  \"tasks\": [\n    {\n      \"id\": 1,\n      \"title\": \"play gloomhaven\",\n      \"isFav\": false\n    },\n    {\n      \"id\": 2,\n      \"title\": \"mow the lawn\",\n      \"isFav\": false\n    },\n    {\n      \"title\": \"become an eldern lord\",\n      \"isFav\": false,\n      \"id\": 3\n    },\n    {\n      \"title\": \"eat some pinapples\",\n      \"isFav\": false,\n      \"id\": 4\n    },\n    {\n      \"id\": 5,\n      \"title\": \"Test task\",\n      \"isFav\": false\n    },\n    {\n      \"id\": 6,\n      \"title\": \"New task\",\n      \"isFav\": false\n    },\n    {\n      \"id\": 7,\n      \"title\": \"New Task 3\",\n      \"isFav\": false\n    },\n    {\n      \"id\": 8,\n      \"title\": \"New task edited offline\",\n      \"isFav\": false\n    }\n  ]\n}\n"
+        }
+    ]
+}

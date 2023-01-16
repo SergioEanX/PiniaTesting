@@ -1,0 +1,82 @@
+{
+    "sourceFile": "src/stores/TaskStore.js",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 16,
+            "patches": [
+                {
+                    "date": 1673805053602,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1673805093940,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n     },\n     totalCount: (state) => state.tasks.length,\n   },\n   actions: {\n-    addTask: (state = (task) => {\n+    addTask: (state) => (task) => {\n       state.tasks.unshift(task);\n-    }),\n+    },\n   },\n });\n"
+                },
+                {
+                    "date": 1673805247166,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n     },\n     totalCount: (state) => state.tasks.length,\n   },\n   actions: {\n-    addTask: (state) => (task) => {\n-      state.tasks.unshift(task);\n+    addTask: (state) => {\n+      state.tasks.unshift({ id: 10, title: 'ADDED NEW', isFav: true });\n     },\n   },\n });\n"
+                },
+                {
+                    "date": 1673805380331,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,8 +20,8 @@\n     totalCount: (state) => state.tasks.length,\n   },\n   actions: {\n     addTask: (state) => {\n-      state.tasks.unshift({ id: 10, title: 'ADDED NEW', isFav: true });\n+      state.tasks.add({ id: 3, title: 'Added', isFav: true });\n     },\n   },\n });\n"
+                },
+                {
+                    "date": 1673805483888,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,9 @@\n     },\n     totalCount: (state) => state.tasks.length,\n   },\n   actions: {\n-    addTask: (state) => {\n-      state.tasks.add({ id: 3, title: 'Added', isFav: true });\n+    addTask(task) {\n+      this.tasks.unshift(task);\n     },\n   },\n });\n"
+                },
+                {
+                    "date": 1673805616789,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,6 +22,7 @@\n   actions: {\n     addTask(task) {\n       this.tasks.unshift(task);\n     },\n+    add: (state) => (task) => state.tasks.unshift(task),\n   },\n });\n"
+                },
+                {
+                    "date": 1673805727569,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,7 +22,8 @@\n   actions: {\n     addTask(task) {\n       this.tasks.unshift(task);\n     },\n-    add: (state) => (task) => state.tasks.unshift(task),\n+    add: (state) =>\n+      state.tasks.unshift({ id: 20, title: 'New task', isFav: true }),\n   },\n });\n"
+                },
+                {
+                    "date": 1673805763911,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,8 +22,6 @@\n   actions: {\n     addTask(task) {\n       this.tasks.unshift(task);\n     },\n-    add: (state) =>\n-      state.tasks.unshift({ id: 20, title: 'New task', isFav: true }),\n   },\n });\n"
+                },
+                {
+                    "date": 1673806184916,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -22,6 +22,15 @@\n   actions: {\n     addTask(task) {\n       this.tasks.unshift(task);\n     },\n+    deleteTask(id) {\n+      this.tasks = this.tasks.filter((t) => {\n+        return t.id !== id;\n+      });\n+    },\n+    toggleFav(id) {\n+      const task = this.tasks.find((t) => t.id === id);\n+      task.isFav = !task.isFav;\n+    },\n   },\n });\n"
+                },
+                {
+                    "date": 1673872694367,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,12 +1,27 @@\n import { defineStore } from 'pinia';\n+import { useSessionStorage } from '@vueuse/core';\n \n+// debounce function\n+function debounce(callback, limit) {\n+  let timeout;\n+  return () => {\n+    clearTimeout(timeout);\n+    timeout = setTimeout(() => {\n+      callback();\n+    }, limit);\n+  };\n+}\n+\n export const useTaskStore = defineStore('taskStore', {\n+  // state: () => ({\n+  //     tasks: [],\n+  //     isLoading: false,\n+  //     name: 'Yoshi',\n+  // }),\n   state: () => ({\n-    tasks: [\n-      { id: 1, title: 'buy some milk', isFav: false },\n-      { id: 2, title: 'play music', isFav: true },\n-    ],\n+    tasks: [],\n+    isLoading: false,\n     name: 'Yoshi',\n   }),\n   getters: {\n     favs() {\n@@ -19,18 +34,57 @@\n     },\n     totalCount: (state) => state.tasks.length,\n   },\n   actions: {\n-    addTask(task) {\n+    async getTasks() {\n+      this.isLoading = true;\n+      const controller = new AbortController();\n+      const id = setTimeout(() => controller.abort(), 500);\n+      const res = await fetch('http://localhost:3000/tasks', {\n+        signal: controller.signal,\n+      });\n+      clearTimeout(id);\n+      this.tasks = await res.json();\n+      useSessionStorage('taskList', this.tasks);\n+      this.isLoading = false;\n+    },\n+\n+    async addTask(task) {\n       this.tasks.unshift(task);\n+      const res = await fetch('http://localhost:3000/tasks', {\n+        method: 'post',\n+        body: JSON.stringify(task),\n+        headers: { 'Content-Type': 'application/json' },\n+      });\n+      useSessionStorage('taskList', this.tasks);\n+      if (res.error) {\n+        console.log(res.error);\n+      }\n     },\n-    deleteTask(id) {\n+    async deleteTask(id) {\n       this.tasks = this.tasks.filter((t) => {\n         return t.id !== id;\n       });\n+      const res = await fetch('http://localhost:3000/tasks/' + id, {\n+        method: 'delete',\n+        headers: { 'Content-Type': 'application/json' },\n+      });\n+      useSessionStorage('taskList', this.tasks);\n+      if (res.error) {\n+        console.log(res.error);\n+      }\n     },\n-    toggleFav(id) {\n+    async toggleFav(id) {\n       const task = this.tasks.find((t) => t.id === id);\n       task.isFav = !task.isFav;\n+      const res = await fetch('http://localhost:3000/tasks/' + id, {\n+        method: 'PATCH',\n+        body: JSON.stringify({ isFav: task.isFav }),\n+        headers: { 'Content-Type': 'application/json' },\n+      });\n+      useSessionStorage('taskList', this.tasks);\n+      if (res.error) {\n+        console.log(res.error);\n+      }\n     },\n   },\n });\n"
+                },
+                {
+                    "date": 1673873000255,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,13 +17,14 @@\n   //     tasks: [],\n   //     isLoading: false,\n   //     name: 'Yoshi',\n   // }),\n-  state: () => ({\n-    tasks: [],\n-    isLoading: false,\n-    name: 'Yoshi',\n-  }),\n+  state: () =>\n+    useSessionStorage('taskList', {\n+      tasks: [],\n+      isLoading: false,\n+      name: 'Yoshi',\n+    }),\n   getters: {\n     favs() {\n       return this.tasks.filter((item) => item.isFav === true);\n     },\n"
+                },
+                {
+                    "date": 1673873154293,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { defineStore } from 'pinia';\n-import { useSessionStorage } from '@vueuse/core';\n+import { useSessionStorage, useApplicationStorage } from '@vueuse/core';\n \n // debounce function\n function debounce(callback, limit) {\n   let timeout;\n@@ -18,9 +18,9 @@\n   //     isLoading: false,\n   //     name: 'Yoshi',\n   // }),\n   state: () =>\n-    useSessionStorage('taskList', {\n+    useApplicationStorage('taskList', {\n       tasks: [],\n       isLoading: false,\n       name: 'Yoshi',\n     }),\n@@ -44,9 +44,9 @@\n         signal: controller.signal,\n       });\n       clearTimeout(id);\n       this.tasks = await res.json();\n-      useSessionStorage('taskList', this.tasks);\n+      useApplicationStorage('taskList', this.tasks);\n       this.isLoading = false;\n     },\n \n     async addTask(task) {\n@@ -55,9 +55,9 @@\n         method: 'post',\n         body: JSON.stringify(task),\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useSessionStorage('taskList', this.tasks);\n+      useApplicationStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n@@ -68,9 +68,9 @@\n       const res = await fetch('http://localhost:3000/tasks/' + id, {\n         method: 'delete',\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useSessionStorage('taskList', this.tasks);\n+      useApplicationStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n"
+                },
+                {
+                    "date": 1673873468025,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n import { defineStore } from 'pinia';\n-import { useSessionStorage, useApplicationStorage } from '@vueuse/core';\n+import { useLocalStorage } from '@vueuse/core';\n \n // debounce function\n function debounce(callback, limit) {\n   let timeout;\n@@ -18,9 +18,9 @@\n   //     isLoading: false,\n   //     name: 'Yoshi',\n   // }),\n   state: () =>\n-    useApplicationStorage('taskList', {\n+    useLocalStorage('taskList', {\n       tasks: [],\n       isLoading: false,\n       name: 'Yoshi',\n     }),\n@@ -44,9 +44,9 @@\n         signal: controller.signal,\n       });\n       clearTimeout(id);\n       this.tasks = await res.json();\n-      useApplicationStorage('taskList', this.tasks);\n+      useLocalStorage('taskList', this.tasks);\n       this.isLoading = false;\n     },\n \n     async addTask(task) {\n@@ -55,9 +55,9 @@\n         method: 'post',\n         body: JSON.stringify(task),\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useApplicationStorage('taskList', this.tasks);\n+      useLocalStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n@@ -68,9 +68,9 @@\n       const res = await fetch('http://localhost:3000/tasks/' + id, {\n         method: 'delete',\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useApplicationStorage('taskList', this.tasks);\n+      useLocalStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n@@ -81,9 +81,9 @@\n         method: 'PATCH',\n         body: JSON.stringify({ isFav: task.isFav }),\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useSessionStorage('taskList', this.tasks);\n+      useLocalStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n"
+                },
+                {
+                    "date": 1673873664382,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -18,13 +18,17 @@\n   //     isLoading: false,\n   //     name: 'Yoshi',\n   // }),\n   state: () =>\n-    useLocalStorage('taskList', {\n-      tasks: [],\n-      isLoading: false,\n-      name: 'Yoshi',\n-    }),\n+    useLocalStorage(\n+      'taskList',\n+      {\n+        tasks: [],\n+        isLoading: false,\n+        name: 'Yoshi',\n+      },\n+      { mergeDefaults: true }\n+    ),\n   getters: {\n     favs() {\n       return this.tasks.filter((item) => item.isFav === true);\n     },\n"
+                },
+                {
+                    "date": 1673873784713,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,9 +48,9 @@\n         signal: controller.signal,\n       });\n       clearTimeout(id);\n       this.tasks = await res.json();\n-      useLocalStorage('taskList', this.tasks);\n+      // useLocalStorage('taskList', this.tasks);\n       this.isLoading = false;\n     },\n \n     async addTask(task) {\n"
+                },
+                {
+                    "date": 1673874178805,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -48,9 +48,9 @@\n         signal: controller.signal,\n       });\n       clearTimeout(id);\n       this.tasks = await res.json();\n-      // useLocalStorage('taskList', this.tasks);\n+\n       this.isLoading = false;\n     },\n \n     async addTask(task) {\n@@ -59,9 +59,9 @@\n         method: 'post',\n         body: JSON.stringify(task),\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useLocalStorage('taskList', this.tasks);\n+\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n@@ -72,9 +72,9 @@\n       const res = await fetch('http://localhost:3000/tasks/' + id, {\n         method: 'delete',\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useLocalStorage('taskList', this.tasks);\n+\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n@@ -85,9 +85,8 @@\n         method: 'PATCH',\n         body: JSON.stringify({ isFav: task.isFav }),\n         headers: { 'Content-Type': 'application/json' },\n       });\n-      useLocalStorage('taskList', this.tasks);\n       if (res.error) {\n         console.log(res.error);\n       }\n     },\n"
+                },
+                {
+                    "date": 1673874512363,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -17,18 +17,16 @@\n   //     tasks: [],\n   //     isLoading: false,\n   //     name: 'Yoshi',\n   // }),\n-  state: () =>\n-    useLocalStorage(\n-      'taskList',\n-      {\n-        tasks: [],\n-        isLoading: false,\n-        name: 'Yoshi',\n-      },\n-      { mergeDefaults: true }\n-    ),\n+  state: () => {\n+    return {\n+      tasks: useLocalStorage('tasks', []),\n+      isLoading: false,\n+      name: useLocalStorage('name', 'Yoshi'),\n+    };\n+  },\n+\n   getters: {\n     favs() {\n       return this.tasks.filter((item) => item.isFav === true);\n     },\n@@ -48,9 +46,8 @@\n         signal: controller.signal,\n       });\n       clearTimeout(id);\n       this.tasks = await res.json();\n-\n       this.isLoading = false;\n     },\n \n     async addTask(task) {\n"
+                }
+            ],
+            "date": 1673805053602,
+            "name": "Commit-0",
+            "content": "import { defineStore } from 'pinia';\n\nexport const useTaskStore = defineStore('taskStore', {\n  state: () => ({\n    tasks: [\n      { id: 1, title: 'buy some milk', isFav: false },\n      { id: 2, title: 'play music', isFav: true },\n    ],\n    name: 'Yoshi',\n  }),\n  getters: {\n    favs() {\n      return this.tasks.filter((item) => item.isFav === true);\n    },\n    favCount() {\n      return this.tasks.reduce((p, c) => {\n        return c.isFav ? p + 1 : p;\n      }, 0);\n    },\n    totalCount: (state) => state.tasks.length,\n  },\n  actions: {\n    addTask: (state = (task) => {\n      state.tasks.unshift(task);\n    }),\n  },\n});\n"
+        }
+    ]
+}

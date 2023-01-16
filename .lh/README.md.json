@@ -1,0 +1,18 @@
+{
+    "sourceFile": "README.md",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1673874783427,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1673874783427,
+            "name": "Commit-0",
+            "content": "# pinia-tasks\n\nThis template should help get you started developing with Vue 3 in Vite.\n\n## Recommended IDE Setup\n\n[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).\n\n## Customize configuration\n\nSee [Vite Configuration Reference](https://vitejs.dev/config/).\n\n## Project Setup\n\n```sh\nnpm install\n```\n\n### Compile and Hot-Reload for Development\n\n```sh\nnpm run dev\n```\n\n### Compile and Minify for Production\n\n```sh\nnpm run build\n```\n\n### Start JSON server\n\n> To serve JSON file inside data folder\n\n```shell\njson-server --watch data/db.json\n```\n\n### Pinia\n\n[Pinia crash course](https://www.youtube.com/watch?v=nI7BOwcEUhk&list=PL4cUxeGkcC9hp28dYyYBy3xoOdoeNw-hD&index=2)  \n[Pinia Course github](https://github.com/iamshaunjp/Pinia-with-Vue-3)\n[Refresh-proof your Pinia Stores](https://www.vuemastery.com/blog/refresh-proof-your-pinia-stores/)\n"
+        }
+    ]
+}

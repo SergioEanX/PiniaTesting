@@ -1,0 +1,44 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "play gloomhaven",
+      "isFav": false
+    },
+    {
+      "id": 2,
+      "title": "mow the lawn",
+      "isFav": false
+    },
+    {
+      "title": "become an eldern lord",
+      "isFav": false,
+      "id": 3
+    },
+    {
+      "title": "eat some pinapples",
+      "isFav": false,
+      "id": 4
+    },
+    {
+      "id": 5,
+      "title": "Test task",
+      "isFav": false
+    },
+    {
+      "id": 6,
+      "title": "New task",
+      "isFav": false
+    },
+    {
+      "id": 7,
+      "title": "New Task 3",
+      "isFav": false
+    },
+    {
+      "id": 8,
+      "title": "New task edited offline",
+      "isFav": false
+    }
+  ]
+}

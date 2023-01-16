@@ -1,0 +1,38 @@
+{
+    "sourceFile": "src/components/TaskDetail.vue",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 5,
+            "patches": [
+                {
+                    "date": 1673805563113,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1673806877992,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,18 +1,18 @@\n <script setup>\n-import { ref } from 'vue'\n-\n-const count = ref(0)\n+// import { ref } from 'vue'\n+import { useTaskStore } from '@/stores/TaskStore'\n+const taskStore = useTaskStore()\n defineProps(['task'])\n </script>\n \n <template>\n   <!--  <button @click=\"count++\">You clicked me {{ count }} times.</button>-->\n   <div class=\"task\">\n     <h3>{{ task.title }}</h3>\n     <div class=\"icons\">\n-      <i class=\"material-icons\">delete</i>\n-      <i class=\"material-icons\">favorite</i>\n+      <i class=\"material-icons\" @click=\"taskStore.deleteTask(task.id)\">delete</i>\n+      <i class=\"material-icons\" @click=\"taskStore.toggleFav()\">favorite</i>\n     </div>\n \n   </div>\n </template>\n"
+                },
+                {
+                    "date": 1673806999245,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n   <div class=\"task\">\n     <h3>{{ task.title }}</h3>\n     <div class=\"icons\">\n       <i class=\"material-icons\" @click=\"taskStore.deleteTask(task.id)\">delete</i>\n-      <i class=\"material-icons\" @click=\"taskStore.toggleFav()\">favorite</i>\n+      <i class=\"material-icons\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n     </div>\n \n   </div>\n </template>\n"
+                },
+                {
+                    "date": 1673807122296,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n   <div class=\"task\">\n     <h3>{{ task.title }}</h3>\n     <div class=\"icons\">\n       <i class=\"material-icons\" @click=\"taskStore.deleteTask(task.id)\">delete</i>\n-      <i class=\"material-icons\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n+      <i class=\"material-icons\" :class=\"active\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n     </div>\n \n   </div>\n </template>\n"
+                },
+                {
+                    "date": 1673807170247,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n   <div class=\"task\">\n     <h3>{{ task.title }}</h3>\n     <div class=\"icons\">\n       <i class=\"material-icons\" @click=\"taskStore.deleteTask(task.id)\">delete</i>\n-      <i class=\"material-icons\" :class=\"active\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n+      <i class=\"material-icons\" :class=\"task.id ? active : ''\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n     </div>\n \n   </div>\n </template>\n"
+                },
+                {
+                    "date": 1673807308542,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -10,9 +10,9 @@\n   <div class=\"task\">\n     <h3>{{ task.title }}</h3>\n     <div class=\"icons\">\n       <i class=\"material-icons\" @click=\"taskStore.deleteTask(task.id)\">delete</i>\n-      <i class=\"material-icons\" :class=\"task.id ? active : ''\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n+      <i class=\"material-icons\" :class=\"{ active: task.isFav }\" @click=\"taskStore.toggleFav(task.id)\">favorite</i>\n     </div>\n \n   </div>\n </template>\n"
+                }
+            ],
+            "date": 1673805563113,
+            "name": "Commit-0",
+            "content": "<script setup>\nimport { ref } from 'vue'\n\nconst count = ref(0)\ndefineProps(['task'])\n</script>\n\n<template>\n  <!--  <button @click=\"count++\">You clicked me {{ count }} times.</button>-->\n  <div class=\"task\">\n    <h3>{{ task.title }}</h3>\n    <div class=\"icons\">\n      <i class=\"material-icons\">delete</i>\n      <i class=\"material-icons\">favorite</i>\n    </div>\n\n  </div>\n</template>\n"
+        }
+    ]
+}
